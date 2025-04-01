@@ -1,6 +1,6 @@
 <?php
 
-namespace Filament\Support\Contracts;
+namespace Filamerce\FilamentModelStates\Contracts;
 
 interface HasActionLabel
 {
