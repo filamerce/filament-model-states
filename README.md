@@ -5,7 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/filamerce/filament-model-states/fix-php-code-styling.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/filamerce/filament-model-states/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/filamerce/filament-model-states.svg?style=flat-square)](https://packagist.org/packages/filamerce/filament-model-states)
 
-TODO
+Package is in progress.
 
 ## Installation
 
