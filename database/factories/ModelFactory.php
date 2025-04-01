@@ -1,6 +1,6 @@
 <?php
 
-namespace VendorName\Skeleton\Database\Factories;
+namespace Filamerce\FilamentModelStates\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
