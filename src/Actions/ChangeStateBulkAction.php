@@ -47,7 +47,7 @@ class ChangeStateBulkAction extends BulkAction
             $allRecords = 0;
             $changedRecords = 0;
 
-            $result = $this->process(static function (Collection $records) use ($propertyName, $newState, &$allRecords, &$changedRecords): void {
+            $this->process(static function (Collection $records) use ($propertyName, $newState, &$allRecords, &$changedRecords): void {
                 $allRecords = $records->count();
 
                 $records->each(static function ($record) use ($propertyName, $newState, &$changedRecords): void {
@@ -66,7 +66,7 @@ class ChangeStateBulkAction extends BulkAction
             if ($changedRecords === 0) {
                 $this->failure();
 
-                Notification::make()->danger()->title(__('filament-model-states::translations.bulk_fail'))->send();
+                Notification::make()->warning()->title(__('filament-model-states::translations.bulk_fail'))->send();
 
                 return;
             }
