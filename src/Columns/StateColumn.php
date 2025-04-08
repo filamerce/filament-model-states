@@ -42,8 +42,6 @@ class StateColumn extends TextColumn
 
                 return null;
             })
-            ->label(__('State'))
-            ->toggleable()
-            ->sortable();
+            ->label(__('filament-model-states::translations.state'));
     }
 }

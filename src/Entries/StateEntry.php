@@ -42,6 +42,6 @@ class StateEntry extends TextEntry
 
                 return null;
             })
-            ->label(__('State'));
+            ->label(__('filament-model-states::translations.state'));
     }
 }
