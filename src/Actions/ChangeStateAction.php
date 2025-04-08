@@ -13,8 +13,11 @@ class ChangeStateAction extends Action
 {
     use CanCustomizeProcess;
 
-    private string $property = 'state';
+    private string $stateProperty = 'state';
 
+    /**
+     * @var class-string
+     */
     private string $newState;
 
     #[Override]
@@ -24,11 +27,11 @@ class ChangeStateAction extends Action
 
         $this->label(fn () => __($this->getNewState()::label()));
 
-        $this->modalHeading(fn (): string => __('Zmienić status na :label?', ['label' => $this->getNewState()::label()]));
+        // $this->modalHeading(fn (): string => __('Zmienić status na :label?', ['label' => $this->getNewState()::label()]));
 
-        $this->modalSubmitActionLabel('??');
+        // $this->modalSubmitActionLabel('??');
 
-        $this->successNotificationTitle(__('Status został zmieniony'));
+        // $this->successNotificationTitle(__('Status został zmieniony'));
 
         $this->icon('phosphor-path');
 
@@ -36,11 +39,12 @@ class ChangeStateAction extends Action
 
         $this->modalIcon('phosphor-path');
 
-        $this->visible(fn (Model $record) => $record->{$this->getPropertyName()}->canTransitionTo($this->getNewState()));
+        $this->authorize(fn (Model $record) => $record->{$this->getStatePropertyName()}->canTransitionTo($this->getNewState()));
 
         $this->action(function (): void {
-            $propertyName = $this->getPropertyName();
+            $propertyName = $this->getStatePropertyName();
             $newState = $this->getNewState();
+
             $result = $this->process(static fn (Model $record) => $record->{$propertyName}->transitionTo($newState));
 
             if (! $result) {
@@ -58,18 +62,21 @@ class ChangeStateAction extends Action
         return 'change-state';
     }
 
-    public function property(string $property): static
+    public function stateProperty(string $stateProperty): static
     {
-        $this->property = $property;
+        $this->stateProperty = $stateProperty;
 
         return $this;
     }
 
-    public function getPropertyName(): string
+    public function getStatePropertyName(): string
     {
-        return $this->property;
+        return $this->stateProperty;
     }
 
+    /**
+     * @param  class-string  $newState
+     */
     public function newState(string $newState): static
     {
         $this->newState = $newState;
@@ -77,6 +84,9 @@ class ChangeStateAction extends Action
         return $this;
     }
 
+    /**
+     * @return class-string
+     */
     public function getNewState(): string
     {
         return $this->newState;
