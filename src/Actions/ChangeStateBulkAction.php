@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Filamerce\FilamentModelStates\Actions;
 
+use Filament\Actions\BulkAction;
 use Filament\Actions\Concerns\CanCustomizeProcess;
 use Filament\Notifications\Notification;
-use Filament\Tables\Actions\BulkAction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Override;
