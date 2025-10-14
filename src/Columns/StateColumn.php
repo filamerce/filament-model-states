@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Filamerce\FilamentModelStates\Columns;
 
+use BackedEnum;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
@@ -33,7 +34,7 @@ class StateColumn extends TextColumn
 
                 return null;
             })
-            ->icon(function ($record): ?string {
+            ->icon(function ($record): string | BackedEnum | null {
                 $state = $record->{$this->name};
 
                 if ($state instanceof HasIcon) {
