@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Filamerce\FilamentModelStates\Actions;
 
+use Closure;
 use Filament\Actions\Concerns\CanCustomizeProcess;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\BulkAction;
@@ -21,6 +22,13 @@ class ChangeStateBulkAction extends BulkAction
      * @var class-string
      */
     private string $newState;
+
+    /**
+     * @var class-string|null
+     */
+    private ?string $problemState = null;
+
+    private ?Closure $operation = null;
 
     #[Override]
     protected function setUp(): void
@@ -40,38 +48,52 @@ class ChangeStateBulkAction extends BulkAction
         $this->requiresConfirmation();
 
         $this->modalIcon('phosphor-path');
-        $this->action(function (): void {
-            $propertyName = $this->getStatePropertyName();
-            $newState = $this->getNewState();
+        $this->action(function (Collection $records): void {
 
-            $allRecords = 0;
+            $allRecords = $records->count();
             $changedRecords = 0;
 
-            $this->process(static function (Collection $records) use ($propertyName, $newState, &$allRecords, &$changedRecords): void {
-                $allRecords = $records->count();
+            $records->each(function ($record) use (&$changedRecords): void {
+                assert($record instanceof Model);
 
-                $records->each(static function ($record) use ($propertyName, $newState, &$changedRecords): void {
-                    assert($record instanceof Model);
+                $propertyName = $this->getStatePropertyName();
+                $newState = $this->getNewState();
+                $operation = $this->getOperation();
+                $problemState = $this->getProblemState();
 
-                    if (! $record->{$propertyName}->canTransitionTo($newState)) {
-                        return;
+                $result = true;
+
+                if ($operation !== null) {
+                    $result = $operation($record);
+                }
+
+                if ($result === true) {
+                    // Status can be transited in $operation(), so we need to check it again
+                    if (! $record->{$propertyName}->equals($newState)) {
+                        $record->{$propertyName}->transitionTo($newState);
                     }
 
                     $changedRecords++;
+                } elseif ($this->getProblemState() !== null) {
+                    $record->{$propertyName}->transitionTo($this->getProblemState());
+                }
 
-                    $record->{$propertyName}->transitionTo($newState);
-                });
             });
 
             if ($changedRecords === 0) {
-                $this->failure();
-
-                Notification::make()->warning()->title(__('filament-model-states::translations.bulk_fail'))->send();
+                Notification::make()->danger()->title(__('filament-model-states::translations.bulk_fail'))->send();
 
                 return;
             }
 
-            $this->success();
+            if ($changedRecords < $allRecords) {
+                Notification::make()->warning()->title(__('filament-model-states::translations.bulk_partial_fail', [
+                    'changed_count' => $changedRecords,
+                    'all_count' => $allRecords,
+                ]))->send();
+
+                return;
+            }
 
             Notification::make()->success()->title(__('filament-model-states::translations.bulk_success', [
                 'changed_count' => $changedRecords,
@@ -82,7 +104,7 @@ class ChangeStateBulkAction extends BulkAction
 
     public static function getDefaultName(): ?string
     {
-        return 'change-state';
+        return 'bulk-change-state';
     }
 
     public function stateProperty(string $stateProperty): static
@@ -113,5 +135,35 @@ class ChangeStateBulkAction extends BulkAction
     public function getNewState(): string
     {
         return $this->newState;
+    }
+
+    /**
+     * @param  class-string  $newState
+     */
+    public function problemState(string $problemState): static
+    {
+        $this->problemState = $problemState;
+
+        return $this;
+    }
+
+    /**
+     * @return class-string|null
+     */
+    public function getProblemState(): string
+    {
+        return $this->evaluate($this->problemState);
+    }
+
+    public function operation(Closure $operation): static
+    {
+        $this->operation = $operation;
+
+        return $this;
+    }
+
+    public function getOperation(): ?Closure
+    {
+        return $this->operation;
     }
 }
