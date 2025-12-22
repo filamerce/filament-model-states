@@ -68,12 +68,15 @@ class ChangeStateBulkAction extends BulkAction
                 }
 
                 if ($result === true) {
-                    // Status can be transited in $operation(), so we need to check it again
-                    if (! $record->{$propertyName}->equals($newState)) {
+                    // Check if transition is allowed and state is different
+                    if (! $record->{$propertyName}->equals($newState) && $record->{$propertyName}->canTransitionTo($newState)) {
                         $record->{$propertyName}->transitionTo($newState);
+                        $changedRecords++;
+                    } elseif ($record->{$propertyName}->equals($newState)) {
+                        // Already in target state, count as changed
+                        $changedRecords++;
                     }
-
-                    $changedRecords++;
+                    // If transition is not allowed, skip this record silently
                 } elseif ($this->getProblemState() !== null) {
                     $record->{$propertyName}->transitionTo($this->getProblemState());
                 }
