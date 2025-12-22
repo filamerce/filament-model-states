@@ -150,7 +150,7 @@ class ChangeStateBulkAction extends BulkAction
     /**
      * @return class-string|null
      */
-    public function getProblemState(): string
+    public function getProblemState(): ?string
     {
         return $this->evaluate($this->problemState);
     }

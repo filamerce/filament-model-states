@@ -127,7 +127,7 @@ class ChangeStateAction extends Action
     /**
      * @return class-string|null
      */
-    public function getProblemState(): string
+    public function getProblemState(): ?string
     {
         return $this->evaluate($this->problemState);
     }
