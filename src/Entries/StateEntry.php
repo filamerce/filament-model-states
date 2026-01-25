@@ -34,7 +34,7 @@ class StateEntry extends TextEntry
 
                 return null;
             })
-            ->icon(function ($record): null|string|BackedEnum {
+            ->icon(function ($record): null | string | BackedEnum {
                 $state = $record->{$this->name};
 
                 if ($state instanceof HasIcon) {
