@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Filamerce\FilamentModelStates\Actions;
 
-use Filament\Actions\BulkAction;
 use Closure;
+use Filament\Actions\BulkAction;
 use Filament\Actions\Concerns\CanCustomizeProcess;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
