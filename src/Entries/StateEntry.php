@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Filamerce\FilamentModelStates\Entries;
 
+use BackedEnum;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
-use BackedEnum;
 
 class StateEntry extends TextEntry
 {
