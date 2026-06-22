@@ -41,11 +41,11 @@ class ChangeStateAction extends Action
 
         // $this->successNotificationTitle(__('Status został zmieniony'));
 
-        $this->icon('heroicon-bolt');
+        $this->icon('heroicon-o-bolt');
 
         $this->requiresConfirmation();
 
-        $this->modalIcon('heroicon-bolt');
+        $this->modalIcon('heroicon-o-bolt');
 
         $this->authorize(fn (Model $record) => $record->{$this->getStatePropertyName()}->canTransitionTo($this->getNewState()));
 
