@@ -7,6 +7,9 @@ namespace Filamerce\FilamentModelStates\Actions;
 use Closure;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\CanCustomizeProcess;
+use Filament\Support\Facades\FilamentIcon;
+use Filament\Support\Icons\Heroicon;
+use Filamerce\FilamentModelStates\View\ModelStatesIconAlias;
 use Illuminate\Database\Eloquent\Model;
 use Override;
 
@@ -41,11 +44,14 @@ class ChangeStateAction extends Action
 
         // $this->successNotificationTitle(__('Status został zmieniony'));
 
-        $this->icon('heroicon-o-bolt');
+        $this->icon(FilamentIcon::resolve(ModelStatesIconAlias::ACTIONS_CHANGE_STATE) ?? Heroicon::OutlinedBolt);
 
         $this->requiresConfirmation();
 
-        $this->modalIcon('heroicon-o-bolt');
+        $this->modalIcon(FilamentIcon::resolve([
+            ModelStatesIconAlias::ACTIONS_CHANGE_STATE_MODAL,
+            ModelStatesIconAlias::ACTIONS_CHANGE_STATE,
+        ]) ?? Heroicon::OutlinedBolt);
 
         $this->authorize(fn (Model $record) => $record->{$this->getStatePropertyName()}->canTransitionTo($this->getNewState()));
 
